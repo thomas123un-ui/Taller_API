@@ -1,6 +1,5 @@
 import requests
 
-# URL base configurada para el puerto 5001 de tu API
 BASE_URL = "http://127.0.0.1:5001/productos"
 
 def mostrar_menu():
