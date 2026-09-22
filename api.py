@@ -124,5 +124,19 @@ def buscar_bajo_stock():
     resultados = [p for p in productos if p["cantidad"] <= 5]
     return jsonify(resultados)
 
+# Buscar Productos por Categoria
+@app.route('/productos/categoria/<string:categoria>', methods=['GET'])
+def buscar_por_categoria(categoria):
+
+    resultados = [p for p in productos if categoria.lower() == p["categoria"].lower()]
+    return jsonify(resultados)
+
+# Calcular Valor Total de Productos
+@app.route('/productos/valor-total', methods=['GET'])
+def calcular_valor_total():
+
+    total = sum(p["precio"] * p["cantidad"] for p in productos)
+    return jsonify({"valor_total": total})
+
 if __name__ == '__main__':
     app.run(debug=True, port=5001)

@@ -13,7 +13,9 @@ def mostrar_menu():
     print("5. Eliminar producto")
     print("6. Buscar producto por nombre")
     print("7. Consultar productos con bajo stock")
-    print("8. Salir")
+    print("8. Consultar productos por categoría")
+    print("9. Consultar valor total del inventario") 
+    print("10. Salir") 
 
 def listar_productos():
     try:
@@ -160,10 +162,38 @@ def consultar_bajo_stock():
     except requests.exceptions.ConnectionError:
         print("Error de conexión con la API.")
 
+def consultar_por_categoria():
+    categoria = input("Ingrese la categoría a buscar: ")
+    try:
+        response = requests.get(f"{BASE_URL}/categoria/{categoria}")
+        if response.status_code == 200:
+            productos = response.json()
+            print(f"\n--- PRODUCTOS EN LA CATEGORÍA '{categoria.upper()}' ---")
+            if not productos:
+                print("No se encontraron productos en esta categoría.")
+            for p in productos:
+                print(f"ID: {p['id']} | Nombre: {p['nombre']} | Precio: ${p['precio']} | Cantidad: {p['cantidad']}")
+        else:
+            print("Error al consultar la categoría.")
+    except requests.exceptions.ConnectionError:
+        print("Error de conexión con la API.")
+
+def consultar_valor_total():
+    try:
+        response = requests.get(f"{BASE_URL}/valor-total")
+        if response.status_code == 200:
+            data = response.json()
+            print(f"\n--- VALOR TOTAL DEL INVENTARIO ---")
+            print(f"El valor total es: ${data['valor_total']:.2f}")
+        else:
+            print("Error al calcular el valor total.")
+    except requests.exceptions.ConnectionError:
+        print("Error de conexión con la API.")
+
 def main():
     while True:
         mostrar_menu()
-        opcion = input("\nSeleccione una opción (1-8): ")
+        opcion = input("\nSeleccione una opción (1-10): ")
 
         if opcion == "1":
             listar_productos()
@@ -180,10 +210,13 @@ def main():
         elif opcion == "7":
             consultar_bajo_stock()
         elif opcion == "8":
+            consultar_por_categoria()
+        elif opcion == "9":
+            consultar_valor_total()
+        elif opcion == "10":
             print("\n¡Saliendo del sistema de inventario. Hasta luego! :/")
             break
         else:
-            print("Opción inválida. Por favor, ingrese un número del 1 al 8.")
-
+            print("Opción inválida. Por favor, ingrese un número del 1 al 10.")
 if __name__ == "__main__":
     main()
